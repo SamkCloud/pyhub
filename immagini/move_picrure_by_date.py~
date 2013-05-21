@@ -17,10 +17,10 @@ def getExifDate(fileName):
 			return "No EXIF Information available."
 		
 		timestamp = data['EXIF DateTimeDigitized']
-		print(timestamp)
 		data = str(timestamp)
 		out = data[0:10].replace(':','_')
 		return out
+		
 		
 import os,sys
 import shutil
