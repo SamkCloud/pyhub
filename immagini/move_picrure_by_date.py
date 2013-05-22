@@ -38,14 +38,15 @@ def getExifDate(fileName):
 		return out
 		
 directory_base = sys.argv[1]
+directory_dest = sys.argv[2]
 
 for root, dirs, files in os.walk(directory_base):
 	for name in files:
 		file = os.path.join(root, name)
-		dir = directory_base+'/new/'+getExifDate(file)
+		dir = directory_dest+'/'+getExifDate(file)
 #		if not os.path.exists(dir):
 #			os.mkdir(dir)
 		print(file+'  '+dir+'_'+name)
-		shutil.copyfile(file,dir+'_'+name)			
-		#shutil.move(file,dir+'_'+name)
+#		shutil.copyfile(file,dir+'_'+name)			
+		shutil.move(file,dir+'_'+name)
 	
