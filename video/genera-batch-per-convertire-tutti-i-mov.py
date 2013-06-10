@@ -1,17 +1,22 @@
 #!/usr/bin/python
+# -*- coding: iso-8859-15 -*-
+
 # programma che genera un file batch per convertire tutte le sottodirectory in mkv
-# da eseguire cosÃ¬:
-# cd directory_madre
-# python ~/tmp/programmazione/walk-dir.py > mkv-mov.sh
+# da eseguire così:
+# cd directory principale
+# ~/bin/pyhub/video/genera-batch-per-convertire-tutti-i-mov ./ > mkv-mov.sh
 # bash mkv-mov.sh 
 
+COMANDO = "~/bin/pyhub/video/trasforma_mjpeg_in_mkv.py "
+
 import os
-for root,dir,files in os.walk(os.getcwd()):
-        
-	for di in dir:
-		print "cd \""+os.path.join(root,di)+"\""
-		print "py/video/trasforma_mjpeg_in_mkv.py *.MOV"
-
-
+import sys
+fileList = []
+rootdir = sys.argv[1]
+for root, subFolders, files in os.walk(rootdir):
+	for file in files:
+		filename= os.path.join(root,file)
+		fileList.append(filename)
+		print(COMANDO+" \""+filename+"\"")
 
 

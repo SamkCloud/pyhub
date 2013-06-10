@@ -9,7 +9,7 @@
 
 """
 script per convertire i file della macchina fotografica dal formato mjpeg in h264 o vorbis
-es: ../../py/video/trasforma_mjpeg_in_mkv.py  *.MOV
+es: ~/bin/pyhub/video/trasforma_mjpeg_in_mkv.py  *.MOV
 """
 
 import sys
@@ -49,17 +49,32 @@ def run(options=None, arguments=''):
 
 	if options.codifica == 'h264':
 		# le opzioni prese da: http://ubuntuforums.org/showthread.php?t=786095
-		# il parametro -crf imposta la qualitÃ  (piÃ¹ basso = migliore( valori da 18 a 28)
-		# con 24 la qualitÃ  Ã¨ molto buona
-		video_options = "-vcodec libx264 -preset veryslow -crf 24 -threads 0"
-		## 20130326 l'encoder audio aac Ã¨ sperimentale , bisogna usare l'opzione -strict -2 per usarlo
-		audio_opt = "-acodec aac -ar 8000 -ab 32k -ac 1 -strict -2"
+		# il parametro -crf imposta la qualità  (più basso = migliore( valori da 18 a 28)
+		# con 22 la qualità  è molto buona
+		# Opzioni:
+		# ar: Campionamento
+		# ab Bitrate
+		# ac numero cananli 1 mono 2 stereo 
+		# strict per abilitare i parametri sperimentali (es aac il 26/3/2013 era considerato sperimentale)
+		## 20130326 l'encoder audio aac è sperimentale , bisogna usare l'opzione -strict -2 per usarlo
+		# NB per i filmati .MOV della Panasonic TZ5 usare bitrate 32kb
+		
+		video_options = "-vcodec libx264 -preset veryslow -crf 20 -threads 0"
+		# Per Panasonic TZ5
+		audio_opt = "-acodec aac -ar 8000 -ab 32k -ac 1 -strict -2"  
+		# per Olimpus XZ-1
+		#audio_opt = "-acodec aac -ab 128k -ac 2 -strict -2"
 		estensione_tmp = '.mp4'
 
 	elif options.codifica == 'vorbis':
 		video_options = "-vcodec libtheora -b 6000k"
 		audio_opt = "-acodec libvorbis -ar 8000 -ab 32k -ac 1"
 		estensione_tmp = '.ogv'
+	
+	elif options.codifica == 'loseless':
+		video_options = "-c:v libx264 -preset veryslow -qp 0"
+		audio_opt = "-acodec aac -ab 128k -ac 2 -strict -2"
+		estensione_tmp = '.mkv'
 
 	else:
 		print('codifica non supportata')
@@ -72,7 +87,7 @@ def run(options=None, arguments=''):
 		nome_tmp = nome_file + estensione_tmp
 		nome_log = nome_file + '.log'
 
-	if extension.lower() == '.mov':
+	if (extension.lower() == '.mov') or (extension.lower() == '.avi'):
 		print('_________________________________________________________________')
 		comando = 'ffmpeg -y -i "' + nome_file + '" ' + video_options + ' ' + audio_opt + ' "' + nome_tmp + '" 2> "' + nome_log + '"'
 		execute_command(comando, options)
@@ -83,7 +98,7 @@ def run(options=None, arguments=''):
 		comando = 'rm -f "'+nome_tmp+'"'
 		execute_command(comando,options)
 	else:
-		print('estenzione non .mov')
+		print('estenzione non .mov o .avi')
 
 def main():
     usage = "usage: %prog [options] files"
@@ -91,7 +106,7 @@ def main():
     p.add_option('--codifica',
                  '-c',
                  default='h264',
-                 help='Scegli il tipo di codifica (h264|vorbis)',
+                 help='Scegli il tipo di codifica (h264|vorbis|loseless)',
                  dest='codifica')
 
     p.add_option('--quiet',
