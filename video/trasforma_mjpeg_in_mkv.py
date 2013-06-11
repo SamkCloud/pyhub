@@ -61,9 +61,9 @@ def run(options=None, arguments=''):
 		
 		video_options = "-vcodec libx264 -preset veryslow -crf 20 -threads 0"
 		# Per Panasonic TZ5
-		audio_opt = "-acodec aac -ar 8000 -ab 32k -ac 1 -strict -2"  
+		#audio_opt = "-acodec aac -ar 8000 -ab 32k -ac 1 -strict -2"  
 		# per Olimpus XZ-1
-		#audio_opt = "-acodec aac -ab 128k -ac 2 -strict -2"
+		audio_opt = "-acodec aac -ab 128k -ac 2 -strict -2"
 		estensione_tmp = '.mp4'
 
 	elif options.codifica == 'vorbis':
