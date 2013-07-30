@@ -3,7 +3,7 @@
 # gd 20091128
 """
 Semplice programma per fare il parsing delle ozioni di input
-nota che si pu√≤ usare anche gi√≤ uil comando --help
+nota che si puÚ usare anche gi‡ il comando --help
 """
 
 import optparse
@@ -13,10 +13,10 @@ def print_r(v):
 
 def run(options=None):
     if options.show_person:
-        print 'Hello %s' % options.show_person
+        print('Hello %s' % options.show_person)
 
     if options.show_home:
-        print 'La casa √®: %s' % options.show_home
+        print('La casa Ë: %s' % options.show_home)
          
 
 
