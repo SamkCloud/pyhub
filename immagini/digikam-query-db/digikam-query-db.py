@@ -15,17 +15,33 @@ def print_r(v):
 	return '%s = %r %s' % (v, v, type(v))
 
 def run(options=None):
-	print(options.digikam_db)
+	#print(options.digikam_db)
 	# TODO check if the db is present
 	conn = sqlite3.connect(options.digikam_db)
 	c = conn.cursor()
+	
+	# Extract all album and insert them into a dictionary 
+	a = c.execute('SELECT id,relativePath FROM Albums')
+	album= {}
+	for row in a:
+		album[row[0]]=row[1]
+		
 	
 	t = (options.tag,)
 	c.execute('SELECT id FROM tags WHERE name=?', t)
 	tag_id=c.fetchone()
 	
 	c.execute('SELECT album, name FROM Images INNER JOIN ImageTags ON (Images.id = ImageTags.imageid AND ImageTags.tagid=?)',tag_id)
-	print(c.fetchone())
+	#print(c.fetchone())
+	for row in c:		
+		file = album[row[0]]+'/'+row[1]
+		
+		if options.show=='List':
+			print(file)
+		elif options.show=='ln':
+			line = 'ln -s ~/Photos/'+file
+			print(line)
+		
 	
 	
 #	if options.show_person:
@@ -39,7 +55,7 @@ def run(options=None):
 
 
 def main():
-	usage = "usage: %prog [options] arg"
+	usage = "usage: %prog [options]"
 	p = optparse.OptionParser(usage)
 	p.add_option('--person',
 				 '-p',
@@ -63,10 +79,17 @@ def main():
 				help='Tag to search',
 				dest='tag')
 
+	p.add_option('--show',
+				'-s',
+				default='List',
+				help='How the data must be shown (List|ln)',
+				dest='show')
+
+	
 
 	options, arguments = p.parse_args()
 
-	if len(arguments) != 1:
+	if len(arguments) != 0:
 		p.error("incorrect number of arguments")
 
 	run(options)
