@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # -*- coding: iso-8859-15 -*-
-# gd 20130730
+# gd 
+# first version 20130730
+# version 20130803
+
 """
 Query digikam db
 """
