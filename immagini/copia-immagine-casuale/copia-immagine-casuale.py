@@ -1,9 +1,8 @@
 #!/usr/bin/python
 # -*- coding: iso-8859-15 -*-
-# rb 20130208
+# gd 20130208
 """
-Semplice programma per fare il parsing delle ozioni di input
-nota che si può usare anche giò uil comando --help
+Copia immagine casualmente per metterla come default backgroud
 """
 
 import optparse
