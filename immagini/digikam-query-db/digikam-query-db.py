@@ -39,7 +39,7 @@ def run(options=None):
 		if options.show=='List':
 			print(file)
 		elif options.show=='ln':
-			line = 'ln -s ~/Photos/'+file
+			line = 'ln -s "'+os.path.expanduser('~')+'/Photos'+file+'"'
 			print(line)
 		
 	
