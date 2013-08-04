@@ -1,2 +1,5 @@
+20130804
+write base command line parser with argparse instead of optparse
 20130730
 port simple-command-line-(optparse) to python3
+

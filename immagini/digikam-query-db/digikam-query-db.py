@@ -17,7 +17,7 @@ import os
 def print_r(v):
 	return '%s = %r %s' % (v, v, type(v))
 
-def run(options=None):
+def run(options=None,arguments=None):
 	#print(options.digikam_db)
 	# TODO check if the db is present
 	conn = sqlite3.connect(options.digikam_db)
@@ -28,74 +28,58 @@ def run(options=None):
 	album= {}
 	for row in a:
 		album[row[0]]=row[1]
-		
-	
-	t = (options.tag,)
+
+	t = arguments
 	c.execute('SELECT id FROM tags WHERE name=?', t)
 	tag_id=c.fetchone()
 	
-	c.execute('SELECT album, name FROM Images INNER JOIN ImageTags ON (Images.id = ImageTags.imageid AND ImageTags.tagid=?)',tag_id)
-	#print(c.fetchone())
+	c.execute('SELECT album, name, id FROM Images INNER JOIN ImageTags ON (Images.id = ImageTags.imageid AND ImageTags.tagid=?) ORDER BY album',tag_id)
 	for row in c:		
 		file = album[row[0]]+'/'+row[1]
-		
 		if options.show=='List':
-			print(file)
+			line = file
 		elif options.show=='ln':
 			line = 'ln -s "'+os.path.expanduser('~')+'/Photos'+file+'"'
-			print(line)
-		
+		elif options.show=='GPS':
+			line = 'exiftool -GPSLongitudeRef=E -GPSLongitude='+options.GPSLongitude+' -GPSLatitudeRef=N -GPSLatitude='+options.GPSLatitude+' "'+os.path.expanduser('~')+'/Photos'+file+'"'
+		print(line)
 	
-	
-#	if options.show_person:
-#		print('Hello %s' % options.show_person)
 
-#	if options.show_home:
-#		print('La casa è: %s' % options.show_home)
-	
-	
+
 		 
 
 
 def main():
-	usage = "usage: %prog [options]"
+	usage = "usage: %prog [options] Tags"
 	p = optparse.OptionParser(usage)
-	p.add_option('--person',
-				 '-p',
-				 default='world',
-				 help='scegli il tipo di pesona',
-				 dest='show_person')
-
-	p.add_option('--casa',
-				 '-c',
-				 default='',
-				 help='Mostra la casa',
-				 dest='show_home')
 				 
 	p.add_option('--digikam-db',
-				default=os.path.expanduser('~/tmp/digikam4.db'),
+				default=os.path.expanduser('~/tmp/digikam-test/digikam4.db'),
 				help='Default db directory',
 				dest='digikam_db')
-	
-	p.add_option('--tag',
-				default='Barca',
-				help='Tag to search',
-				dest='tag')
 
 	p.add_option('--show',
 				'-s',
 				default='List',
-				help='How the data must be shown (List|ln)',
+				help='How the data must be shown (List|ln|GPS)',
 				dest='show')
-
+	p.add_option('--GPSLatitude',
+				default='',
+				help='GPS Latitude coordinate to set es: 48.677952 ',
+				dest='GPSLatitude')
+	p.add_option('--GPSLongitude',
+				default='',
+				help='GPS Longitude coordinate to set es: 11.099678 ',
+				dest='GPSLongitude')
+	
 	
 
 	options, arguments = p.parse_args()
 
-	if len(arguments) != 0:
-		p.error("incorrect number of arguments")
+	if len(arguments) != 1:
+		p.error("incorrect number of arguments Insert Tag Name")
 
-	run(options)
+	run(options,arguments)
  
 
 if __name__ == '__main__':

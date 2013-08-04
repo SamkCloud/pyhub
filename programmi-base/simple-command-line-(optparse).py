@@ -6,6 +6,8 @@ Semplice programma per fare il parsing delle ozioni di input
 nota che si può usare anche già il comando --help
 """
 
+# Note optsparse is DEPRECATED in favour of argparse
+
 import optparse
 
 def print_r(v):
