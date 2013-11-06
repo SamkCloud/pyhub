@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: iso-8859-15 -*-
 # gd 20131024
-# last change: 20131026
+# last change: 20131106
  
 """
 Video Catalog
@@ -92,9 +92,16 @@ def get_videoinfo(pathtovideo):
 	
 def get_fileinfo(filename):
 	file_info =  {}
+	
+	(file_info['path'],file_info['filename']) = os.path.split(filename)
+		
 	statinfo = os.stat(filename)
-	file_info['size']=(statinfo.st_size)
-	return file_info
+	file_info['filesize']=(statinfo.st_size)
+	
+	#TODO if VIDEOFILE
+	file_info1 =  dict (file_info, **(get_videoinfo(filename) ))
+	
+	return file_info1
 
 def check_library(args):
 	# check if the library exists and if not, create it
@@ -113,15 +120,24 @@ def check_library(args):
 			print_log("Database created")
 
 		
-def add_video_to_db(filename,args):
+def add_file_to_db(filename,args):
 	# Add single video to the DB
+
 	file_info = get_fileinfo(filename)
-	print(file_info)
-	
 	conn = sqlite3.connect(args.library)
 	cursor = conn.cursor()
-	sql = "INSERT INTO file_list ('name','filesize') VALUES (?,?);"
-	cursor.execute(sql,(filename,0000))
+
+	file_info_keys = file_info.keys()
+	file_info_values = list(file_info.values())
+	
+	keys = ",".join(file_info_keys)
+	question_mark =  ",".join('?' *  len(file_info_keys))
+	
+	
+	sql = "INSERT INTO file_list ("+keys+") VALUES ("+question_mark+");"
+	print(sql)
+	print (file_info_values)
+	cursor.execute(sql,file_info_values)
 	conn.commit()
 	
 	if args.verbose :
@@ -136,7 +152,7 @@ def add_directory(dirname,args):
 	for dirpath, dirnames,files in os.walk(dirname):
 		for filename in files:
 			file_full_path = os.path.join(dirpath, filename)
-			add_video_to_db(file_full_path,args)
+			add_file_to_db(file_full_path,args)
 			
 
 def run(args=None):
