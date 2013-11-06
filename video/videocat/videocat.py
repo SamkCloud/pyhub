@@ -8,6 +8,7 @@ Video Catalog
 """
 
 # TODO
+#use xdg variables
 
 import argparse
 import os
@@ -105,7 +106,10 @@ def get_fileinfo(filename):
 
 def check_library(args):
 	# check if the library exists and if not, create it
-	print (args.library)
+	(directory,filename) = os.path.split(args.library)
+	if not os.path.exists(directory):
+		os.makedirs(directory)
+	
 	conn = sqlite3.connect(args.library)
 	cursor = conn.cursor()
 	cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
@@ -174,7 +178,7 @@ def main():
 	parser.add_argument('-a','--add-video', help='Add single Video')
 	parser.add_argument('-d','--directory-input',help='Directory where are ')
 	parser.add_argument('-o','--output',help='Output file name', default='videocat.html')
-	parser.add_argument('--library',help='Library name',default="videocat.sqlite")
+	parser.add_argument('--library',help='Library name',default="~./config/videocat/videocat.db")    # TODO use xdg varuiables
 	parser.add_argument('-v','--verbose',help='Verbose',action="store_true")
 	
 	args = parser.parse_args()
