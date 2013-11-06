@@ -25,11 +25,9 @@ def print_r(v):
 
 
  
-def get_fileinfo(pathtovideo):
-	
-	statinfo = os.stat(pathtovideo)
+def get_videoinfo(pathtovideo):
 	file_info =  {}
-	file_info['size']=(statinfo.st_size)
+	
 	
 	p = subprocess.Popen(['ffprobe', '-i', pathtovideo],
 	stdout=subprocess.PIPE,
@@ -91,6 +89,12 @@ def get_fileinfo(pathtovideo):
 	else:
 		file_info['Container']= "NONE"
 	return file_info
+	
+def get_fileinfo(filename):
+	file_info =  {}
+	statinfo = os.stat(filename)
+	file_info['size']=(statinfo.st_size)
+	return file_info
 
 def check_library(args):
 	# check if the library exists and if not, create it
@@ -107,10 +111,12 @@ def check_library(args):
 		cursor.executescript(sql)
 		if args.verbose :
 			print_log("Database created")
+
 		
-def add_video(filename,args):
+def add_video_to_db(filename,args):
 	# Add single video to the DB
-	print(get_fileinfo(filename))
+	file_info = get_fileinfo(filename)
+	print(file_info)
 	
 	conn = sqlite3.connect(args.library)
 	cursor = conn.cursor()
@@ -130,7 +136,7 @@ def add_directory(dirname,args):
 	for dirpath, dirnames,files in os.walk(dirname):
 		for filename in files:
 			file_full_path = os.path.join(dirpath, filename)
-			add_video(file_full_path,args)
+			add_video_to_db(file_full_path,args)
 			
 
 def run(args=None):
