@@ -23,6 +23,6 @@ def set_tag_in_dir(dir,tag):
 
 
 #------------------------------- MAIN --------------------------------
-tag = 'Raf'
+tag = 'GD'
 directory_da_processare = './'
 set_tag_in_dir(directory_da_processare,tag)
