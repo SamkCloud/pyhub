@@ -13,7 +13,7 @@ def set_tag_in_dir(dir,tag):
 			(filebase,estensione) = os.path.splitext( nome_file_completo )
 			if (estensione.lower() == '.ogg'): 			
 				os.system('vorbiscomment -w "'+ nome_file_completo+'" -t "ENCODED-BY='+tag+'"')
-# con l'mp3 ha si puÃ² usare ex-faso
+# con l'mp3 ha si può usare ex-faso
 # id3v2 NON supporta i tag 2.4 !!! meglio usare eyeD3
 			if (estensione.lower() == '.mp3'): 			
 				os.system('id3v2 --TENC "'+tag+'" "' + nome_file_completo+'"')
