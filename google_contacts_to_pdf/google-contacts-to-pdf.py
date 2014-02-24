@@ -1,8 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 # -*- coding: iso-8859-15 -*-
 # gd 20120326
 """
 Program to read Google contact CSV and export to PDF
+Export in Outlook FORMAT CSV
+
 Work with in-file ANSI and UNIX CR
 """
 
