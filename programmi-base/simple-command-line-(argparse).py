@@ -21,6 +21,7 @@ def main():
 	
 
 	parser = argparse.ArgumentParser(description='Demo of argparse')
+	parser.add_argument("dirname", help='directory in cui ci sono i film da analizzare')
 	parser.add_argument('-i','--input', help='Input file name',required=True)
 	parser.add_argument('-o','--output',help='Output file name', default='file.txt')
 	parser.add_argument('-n','--number',help='Numer of times', dest="num", type=int )

@@ -12,7 +12,10 @@ def recusively_lanch_command(dir):
 			(filebase,estensione) = os.path.splitext( nome_file_completo )
 			if (estensione.lower() == '.py'): 			
 				os.system('ls -la "'+ nome_file_completo+'"')
-				# al posto di os.system si puo' usare subprocess
+				# al posto di os.system meglio usare subprocess
+				# es: 
+				#import subprocess
+				#output = subprocess.check_output(['ls', '-1'])
 	
 
 
