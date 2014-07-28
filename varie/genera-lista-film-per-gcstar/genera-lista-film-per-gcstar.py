@@ -39,7 +39,7 @@ def show_file_in_dir(dir):
 
 			
 			
-			print (''+titolo+';'+nomefile+';'+commento+'')
+			print (''+titolo+';'+nome_file_completo+';'+commento+'')
 
 def run(args):
 	print ("Titolo;Trailer;Commento")
