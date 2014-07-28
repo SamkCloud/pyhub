@@ -8,13 +8,15 @@ def show_file_in_dir(dir):
       show_file_in_dir(subdir)
     for nomefile in filenames:
       #print (nomefile)
-      parts = nomefile.split("-") # Will raise exception if too many options 
-      parts += [None] * (8 - len(parts)) # Assume we can have max. 4 items. Fill in missing entries with None.  
-      (anno,titolo,lingue,qualita,op1,opt2,opt3,opt4)=parts
+      parts = nomefile.split("-") 
       
-      print (titolo+';'+nomefile)
+      if(len(parts)==4):
+        (anno,titolo,lingue,qualita)=parts
+      else:
+        titolo=nomefile
+        
+      print (titolo+';'+nomefile+';II;VV')
       
 
-print ("Titolo;NomeFile")
+print ("Titolo;NomeFile;Identifier;Video")
 show_file_in_dir('./')
-
