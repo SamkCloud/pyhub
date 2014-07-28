@@ -52,9 +52,11 @@ def run(args):
 	f = open(args.output,'w')
 	f.write("Titolo;Trailer;Commento\n") 
 	f.close()
-	#print("Titolo;Trailer;Commento") 
 	show_file_in_dir(args.dirname,args)	 
 
+	ora = int(time.time())
+	print("Command excecuted:",time.ctime(ora))
+	print("Command excecuted UNIX TIME:",ora)
 	
 	 
 def main():
