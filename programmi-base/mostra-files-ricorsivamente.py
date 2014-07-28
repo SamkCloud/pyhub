@@ -7,6 +7,6 @@ def show_file_in_dir(dir):
 		for subdir in dirnames:
 			show_file_in_dir(subdir)
 		for nomefile in filenames:
-			print dirpath+'/'+nomefile
+			print (dirpath+'/'+nomefile)
 	
 show_file_in_dir('./')
