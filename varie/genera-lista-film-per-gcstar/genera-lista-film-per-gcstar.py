@@ -21,7 +21,7 @@ def show_file_in_dir(dir,args):
 			nome_file_completo = os.path.join(dirpath,nomefile)
 			(mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(nome_file_completo)
 
-			#print (nomefile)
+			print (nomefile)
 			parts = nomefile.split("-") 
 		
 			if(len(parts)==4):
@@ -29,7 +29,7 @@ def show_file_in_dir(dir,args):
 			else:
 				titolo=nomefile
 			
-			command_line = "ffprobe INPUT"
+			command_line = 'ffprobe "INPUT"'
 			command_line = command_line.replace('INPUT', nome_file_completo)
 			
 			command_line_list = shlex.split(command_line)
