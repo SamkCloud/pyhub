@@ -2,6 +2,14 @@
 # -*- coding: utf-8 -*-
 # gd 20130804
 
+##########
+#
+# Quando si fa l'import su GCSTAR ricordarsi di impostare i seguenti campi nel seguente ordine:
+#
+# Titolo; Trailer; Commento
+#
+#
+
 import os
 import argparse
 import subprocess
