@@ -62,21 +62,24 @@ def run(args):
 	f.close()
 	show_file_in_dir(args.dirname,args)	 
 
-	ora = int(time.time())
-	print("Command excecuted:",time.ctime(ora))
-	print("Command excecuted UNIX TIME:",ora)
+
 	
 	 
 def main():
 
+	ora = int(time.time())
+	
+
 	parser = argparse.ArgumentParser(description='Genera la lista film in csv da importare in gcstar')
 	parser.add_argument("dirname", help='directory in cui ci sono i film da analizzare')
-	parser.add_argument('-o','--output',help='Output file name', default='lista-film.csv')
+	parser.add_argument('-o','--output',help='Output file name', default='lista-film-'+str(ora)+'.csv')
 	parser.add_argument('-t','--newer-time',help='Only file newer than (Unix Time)', default=0)
 	args = parser.parse_args()
 	
 	run(args)
 
+	print("Command excecuted:",time.ctime(ora))
+	print("Command excecuted UNIX TIME:",ora)
 
 
 if __name__ == '__main__':
