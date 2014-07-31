@@ -8,7 +8,8 @@
 #
 # Titolo; Trailer; Commento
 #
-#
+# 
+# Vedere se si può sostyituire ffmprobe con mediainfo
 
 import os
 import argparse
