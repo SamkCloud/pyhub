@@ -69,11 +69,11 @@ def run(args):
 def main():
 
 	ora = int(time.time())
-	
+	ora_yyyymmdd = time.strftime("%Y%m%d-%H%M%S")
 
 	parser = argparse.ArgumentParser(description='Genera la lista film in csv da importare in gcstar')
 	parser.add_argument("dirname", help='directory in cui ci sono i film da analizzare')
-	parser.add_argument('-o','--output',help='Output file name', default='lista-film-'+str(ora)+'.csv')
+	parser.add_argument('-o','--output',help='Output file name', default='lista-film-'+str(ora_yyyymmdd)+'.csv')
 	parser.add_argument('-t','--newer-time',help='Only file newer than (Unix Time)', default=0)
 	args = parser.parse_args()
 	
@@ -81,6 +81,7 @@ def main():
 
 	print("Command excecuted:",time.ctime(ora))
 	print("Command excecuted UNIX TIME:",ora)
+	print("Command excecuted YYYYMMDD:",ora_yyyymmdd)
 
 
 if __name__ == '__main__':
