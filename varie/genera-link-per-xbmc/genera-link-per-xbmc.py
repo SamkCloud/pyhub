@@ -4,6 +4,9 @@
 
 import argparse
 
+def print_r(v):
+	return '%s = %r %s' % (v, v, type(v))
+
 
 def main():
 	
