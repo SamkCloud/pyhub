@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 # gd 20140904
 
+#Programma per convertire i nomi file dei film in un formato che sia compatibile per XBMC per trovare le informazioni dei film su internet. 
+
 import argparse
 import subprocess
 import os
