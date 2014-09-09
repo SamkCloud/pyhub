@@ -1,7 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# gd 20140908
+# gd
+# inital release 20140908
+# version 20140909
 
+
+#
+#Ricordarsi di stampare l'agenda con l'opzione fronte-retro : (short edge TOP )
+#
 
 """
 Program to read Google contact CSV and export to PDF
@@ -24,7 +30,30 @@ def print_r(v):
 
 def default_multiple_page_tex():
 	out = '''\\documentclass[a4paper,12pt]{article}
+\\title{Agenda}
+
+% imposta la lingua italiana
+\\usepackage[italian]{babel}
+
+%disabilita l'identazione 
+\\setlength{\parindent}{0pt}
+
+% genera il libretto 
+\\usepackage{geometry}
+\\geometry {centering,nohead }
+\\geometry{width=108.5mm,height=170mm}
+
+
+\\usepackage[print,1to1]{booklet}
+\\nofiles
+\\pagespersignature{36}
+%
+
+
 \\begin{document}
+\\setpdftargetpages
+\\maketitle
+\\newpage
 ###CONTENT###
 \\end{document}
 '''
@@ -75,18 +104,23 @@ def default_single_page_tex():
 
 def emit_multiple_page(args=None):
 	# genera un latex con tutti i dati in versione agendina
-	printed_fileds = ["Last Name","First Name","Home Phone","Business Phone","Mobile Phone","Pager","Birthday"]
+	
+	printed_fileds = ["Home Phone","Business Phone","Mobile Phone","Pager","Birthday"]
+	tranlated_fields = {"Home Phone":"Casa","Business Phone":"Ufficio","Mobile Phone":"Cellulare","Pager":"Tel2","Birthday":"Compleanno"}
+	#"Last Name","First Name" are append at the beginning
 	data_row = []
 	
 	with open(args.csvfile , newline='', encoding='iso-8859-1') as csv_file_input:
-		for row in csv.DictReader(csv_file_input, delimiter=','):
+		csv_row = csv.DictReader(csv_file_input, delimiter=',')
+		for row in csv_row:
 			line_latex = ''
 			campi_tmp = []
+			
+			# Aggiungo il titolo (Last name + first name)
+			campi_tmp.append('\\textbf{'+row["Last Name"]+' '+row["First Name"]+'}\\newline')
 			for filed in printed_fileds:
-				if (filed == "Last Name"):
-					campi_tmp.append(filed+': \\textbf{'+row[filed]+'}\\newline')	
-				else: 
-					campi_tmp.append(filed+': '+row[filed]+'\\newline')	
+				if(row[filed] != ''): # evito di scrivere i campi vuoti
+					campi_tmp.append(tranlated_fields[filed]+': '+row[filed]+'\\newline')	
 			line_latex = "\n".join(campi_tmp)
 			data_row.append(line_latex)
 			data_row.append('\\rule{\\textwidth}{1pt}')
@@ -105,7 +139,8 @@ def emit_single_page(args=None):
 	i = -1
 	
 	with open(args.csvfile , newline='', encoding='iso-8859-1') as csv_file_input:
-		for row in csv.DictReader(csv_file_input, delimiter=','):
+		csv_row = csv.DictReader(csv_file_input, delimiter=',')
+		for row in csv_row:
 	
 			line_latex = ''
 			campi_tmp = []
