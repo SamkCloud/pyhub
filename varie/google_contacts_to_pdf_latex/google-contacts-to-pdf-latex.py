@@ -116,8 +116,8 @@ def emit_multiple_page(args=None):
 			line_latex = ''
 			campi_tmp = []
 			
-			# Aggiungo il titolo (Last name + first name)
-			campi_tmp.append('\\textbf{'+row["Last Name"]+' '+row["First Name"]+'}\\newline')
+			# Aggiungo il titolo (Last name + first name + Middle Name)
+			campi_tmp.append('\\textbf{'+row["Last Name"]+' '+row["First Name"]+' '+row["Middle Name"]+'}\\newline')
 			for filed in printed_fileds:
 				if(row[filed] != ''): # evito di scrivere i campi vuoti
 					campi_tmp.append(tranlated_fields[filed]+': '+row[filed]+'\\newline')	
@@ -165,6 +165,7 @@ def run(args=None):
 	elif (args.format == 'm'): 
 		latext_core = emit_multiple_page(args)
 		template = default_multiple_page_tex()
+		print ("Ricordarsi di stampare l'agenda con l'opzione fronte-retro : (short edge TOP )")
 	else:
 		print('Format not know')
 
