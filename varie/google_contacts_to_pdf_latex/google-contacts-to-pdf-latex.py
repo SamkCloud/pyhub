@@ -24,6 +24,7 @@ TODO
 import argparse
 import csv
 import fileinput
+import os
 
 def print_r(v):
     return '%s = %r %s' % (v, v, type(v))
@@ -34,6 +35,7 @@ def default_multiple_page_tex():
 
 % imposta la lingua italiana
 \\usepackage[italian]{babel}
+\\usepackage[utf8x]{inputenc}
 
 %disabilita l'identazione 
 \\setlength{\parindent}{0pt}
@@ -62,6 +64,7 @@ def default_multiple_page_tex():
 def default_single_page_tex():
 
 	out = '''\\documentclass[a4paper,landscape,12pt]{article}
+\\usepackage[utf8x]{inputenc}
 \\usepackage{longtable}
 \\usepackage{graphicx}
 \\usepackage[table,xcdraw]{xcolor}
@@ -105,9 +108,9 @@ def default_single_page_tex():
 def emit_multiple_page(args=None):
 	# genera un latex con tutti i dati in versione agendina
 	
-	printed_fileds = ["Home Phone","Business Phone","Mobile Phone","Pager","Birthday"]
-	tranlated_fields = {"Home Phone":"Casa","Business Phone":"Ufficio","Mobile Phone":"Cellulare","Pager":"Tel2","Birthday":"Compleanno"}
-	#"Last Name","First Name" are append at the beginning
+	printed_fileds = ["Home Phone","Business Phone","Mobile Phone","Pager"]
+	tranlated_fields = {"Home Phone":"Casa","Business Phone":"Ufficio","Mobile Phone":"Cellulare","Pager":"Tel2"}
+	#"Last Name","First Name ... " are append at the beginning
 	data_row = []
 	
 	with open(args.csvfile , newline='', encoding='iso-8859-1') as csv_file_input:
@@ -115,9 +118,19 @@ def emit_multiple_page(args=None):
 		for row in csv_row:
 			line_latex = ''
 			campi_tmp = []
-			
+	
 			# Aggiungo il titolo (Last name + first name + Middle Name)
-			campi_tmp.append('\\textbf{'+row["Last Name"]+' '+row["First Name"]+' '+row["Middle Name"]+'}\\newline')
+			if(row["Company"] != ''):
+				line = '\\textbf{'+row["Company"]+' '+row["Last Name"]+' '+row["First Name"]+' '+row["Middle Name"]+'}'
+			else:
+				line = '\\textbf{'+row["Last Name"]+' '+row["First Name"]+' '+row["Middle Name"]+'}'
+		
+			if (row["Job Title"] != ''):
+				line = line + '('+row["Job Title"]+')'
+				
+			line = line + '\\newline'
+			campi_tmp.append(line)
+			
 			for filed in printed_fileds:
 				if(row[filed] != ''): # evito di scrivere i campi vuoti
 					campi_tmp.append(tranlated_fields[filed]+': '+row[filed]+'\\newline')	
@@ -172,6 +185,10 @@ def run(args=None):
 	if (args.template != ''):
 		print("TODO: caricare un template")
 	
+	if (args.include != ''):
+		file_senza_estensione , estensione = os.path.splitext(args.include)
+		latext_core = latext_core + '\\include{'+file_senza_estensione+'}'
+	
 	out = template.replace("###CONTENT###",latext_core)
 
 	if (args.outfile == ''):
@@ -187,6 +204,7 @@ def main():
 	parser.add_argument('-t','--template',help='Latex template', default = '')
 	parser.add_argument('-f','--format',help='Format s: single_page  m: multiple_page ', default = 's')
 	parser.add_argument('-o','--outfile',help='Outputfile', default = '')
+	parser.add_argument('-i','--include',help='include extra latex file at the end (useful for adding custom pages)', default = '')
 	
 	args = parser.parse_args()
 
