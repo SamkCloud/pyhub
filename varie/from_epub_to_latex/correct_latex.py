@@ -25,14 +25,18 @@ def includegraphics2figure(args=None):
 	shutil.move(args.input,args.input+'.tmp')
 	out = open(args.input,'w',encoding='utf8')
 	
+	indici_inseriti = []
+	
 	with open(args.input+'.tmp','r',encoding='utf8') as f:
 		for line in f:
-			espressione = '\includegraphics\{Images\/index'
+			espressione = '\includegraphics\{index'
 			if not re.search(espressione, line,re.I):
 				out.write(line)
 			else: 
 				(sl,sr) = line.split('-')
-				(img_number,srr) = sr.split('.')
+				(img_number_0,srr) = sr.split('.')
+				(img_extension,othe) = srr.split('}')
+				(img_number,minor_number) = img_number_0.split('_')
 				new_string = """
 \\begin{figure}[h!]
 	\centering
@@ -42,8 +46,13 @@ def includegraphics2figure(args=None):
 \end{figure}
 
 """
-				final_string = new_string.replace("###NUM###",img_number)
-				out.write(final_string)
+				final_0 = new_string.replace("###NUM###",img_number)
+				final_1 = final_0.replace("###EXT###",img_extension)
+				
+				# non iserisce immagini gia' inserite (le immagini dei pdf possono essere divise verticaleente e per questo bisogna riunirle )
+				if img_number not in indici_inseriti:
+					out.write(final_1)
+					indici_inseriti.append(img_number)
 				
 	os.remove(args.input+'.tmp')
 			
@@ -56,7 +65,7 @@ def run(args=None):
 def main():
 	
 	parser = argparse.ArgumentParser(description='Demo of argparse')
-	parser.add_argument("input", help='directory in cui ci sono i film da analizzare')
+	parser.add_argument("input", help='input file')
 #	parser.add_argument('-o','--output',help='Output file name', default='output.tex')
 	args = parser.parse_args()
 
