@@ -104,17 +104,16 @@ def get_fileinfo(filename):
 	return file_info1
 
 
-def add_directory(dirname,args):
-	f = open(args.output, 'wt')
-	fieldnames = ('path','filename','bitrate', 'Container', 'Acodec', 'duration', 'Ysize', 'Xsize', 'filesize', 'Vcodec' )
-	writer = csv.DictWriter(f, fieldnames=fieldnames)
-	headers = dict( (n,n) for n in fieldnames )
-	writer.writerow(headers)	
+def add_directory(dirname,args,writer):
+
 	
 	# add all the movie in a directory
 	if args.verbose :
 		print_log("Analizing "+ dirname)
 	for dirpath, dirnames,files in os.walk(dirname):
+		for subdir in dirnames:
+			add_directory(subdir,args,writer)
+		
 		for filename in files:
 			file_full_path = os.path.join(dirpath, filename)
 			#			print(file_full_path,args)
@@ -124,19 +123,24 @@ def add_directory(dirname,args):
 			print(file_info)
 			writer.writerow(file_info)
 	
-	f.close()
+	
 	
 			
 
 def run(args=None):
-	
+	f = open(args.output, 'wt')
+	fieldnames = ('path','filename','bitrate', 'Container', 'Acodec', 'duration', 'Ysize', 'Xsize', 'filesize', 'Vcodec' )
+	writer = csv.DictWriter(f, fieldnames=fieldnames)
+	headers = dict( (n,n) for n in fieldnames )
+	writer.writerow(headers)	
 	
 	print ("Output file: %s" % args.output )
 	
 	if args.directory_input:
-		add_directory(args.directory_input,args)
+		add_directory(args.directory_input,args,writer)
 
-
+	f.close()
+		
 def main():
 	
 	parser = argparse.ArgumentParser(description='Demo of argparse')
