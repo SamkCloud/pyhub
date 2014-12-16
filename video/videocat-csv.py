@@ -105,6 +105,12 @@ def get_fileinfo(filename):
 
 
 def add_directory(dirname,args):
+	f = open(args.output, 'wt')
+	fieldnames = ('path','filename','bitrate', 'Container', 'Acodec', 'duration', 'Ysize', 'Xsize', 'filesize', 'Vcodec' )
+	writer = csv.DictWriter(f, fieldnames=fieldnames)
+	headers = dict( (n,n) for n in fieldnames )
+	writer.writerow(headers)	
+	
 	# add all the movie in a directory
 	if args.verbose :
 		print_log("Analizing "+ dirname)
@@ -116,6 +122,9 @@ def add_directory(dirname,args):
 			file_info_keys = file_info.keys()
 			file_info_values = list(file_info.values())
 			print(file_info)
+			writer.writerow(file_info)
+	
+	f.close()
 	
 			
 
@@ -123,6 +132,7 @@ def run(args=None):
 	
 	
 	print ("Output file: %s" % args.output )
+	
 	if args.directory_input:
 		add_directory(args.directory_input,args)
 
