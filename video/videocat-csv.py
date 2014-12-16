@@ -9,7 +9,6 @@ scansiona una directory con le subdirectory e esporta in un file le informazioni
 """
 
 # TODO
-# capire se fa anceh le subdirectory .... probabilmente no
 
 import argparse
 import os
