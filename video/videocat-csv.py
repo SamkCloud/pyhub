@@ -26,8 +26,7 @@ def print_r(v):
  
 def get_videoinfo(pathtovideo):
 	file_info =  {}
-	
-	
+
 	p = subprocess.Popen(['ffprobe', '-i', pathtovideo],
 	stdout=subprocess.PIPE,
 	stderr=subprocess.PIPE)
@@ -53,7 +52,7 @@ def get_videoinfo(pathtovideo):
 	# Bitrate
 	pattern = re.compile(b'Duration.*bitrate.*:\s([0-9]{,})')
 	match = pattern.search(stderr)
-	if match:
+	if (match and isinstance( match.groups()[0], int )):
 		file_info['bitrate'] = int(match.groups()[0])
 	else:
 		file_info['bitrate'] = "NONE"
@@ -115,15 +114,14 @@ def add_directory(dirname,args,writer):
 		
 		for filename in files:
 			file_full_path = os.path.join(dirpath, filename)
-			#			print(file_full_path,args)
+			print(file_full_path)
 			file_info = get_fileinfo(file_full_path)
 			file_info_keys = file_info.keys()
 			file_info_values = list(file_info.values())
-			print(file_info)
+			#	print(file_info)
 			writer.writerow(file_info)
 	
-	
-	
+
 			
 
 def run(args=None):
