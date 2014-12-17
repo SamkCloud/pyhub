@@ -6,6 +6,7 @@
 """
 Video Catalog to csv
 scansiona una directory con le subdirectory e esporta in un file le informazioni relative ai file video
+
 """
 
 # TODO
@@ -52,8 +53,11 @@ def get_videoinfo(pathtovideo):
 	# Bitrate
 	pattern = re.compile(b'Duration.*bitrate.*:\s([0-9]{,})')
 	match = pattern.search(stderr)
-	if (match and isinstance( match.groups()[0], int )):
-		file_info['bitrate'] = int(match.groups()[0])
+	if match :
+		try:
+			file_info['bitrate'] = int(match.groups()[0])
+		except TypeError:
+			file_info['bitrate'] = "none"
 	else:
 		file_info['bitrate'] = "NONE"
 
