@@ -54,8 +54,8 @@ def get_videoinfo(pathtovideo):
 	# Bitrate
 	pattern = re.compile(b'Duration.*bitrate.*:\s([0-9]{,})')
 	match = pattern.search(stderr)
-	bitrate_string  = match.groups()[0]
-	if match  :
+	if match:
+		bitrate_string  = match.groups()[0]
 		try:
 			file_info['bitrate'] = int(bitrate_string )
 		except ValueError:
