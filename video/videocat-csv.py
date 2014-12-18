@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: iso-8859-15 -*-
 # gd 20131024
-# last change: 20141216
+# last change: 20141218
  
 """
 Video Catalog to csv
@@ -10,6 +10,7 @@ scansiona una directory con le subdirectory e esporta in un file le informazioni
 """
 
 # TODO
+# inserire la data nel log (invece che di YYYYMMAA)
 
 import argparse
 import os
@@ -145,7 +146,7 @@ def run(args=None):
 		
 def main():
 	
-	parser = argparse.ArgumentParser(description='Demo of argparse')
+	parser = argparse.ArgumentParser(description='Genera un file con tutte le informazioni sui file video contenuti in una directory (comprese le subdirectory)')
 	parser.add_argument('-d','--directory-input',help='Directory where are ')
 	parser.add_argument('-o','--output',help='Output file name', default='videocat.csv')
 	parser.add_argument('-v','--verbose',help='Verbose',action="store_true")
