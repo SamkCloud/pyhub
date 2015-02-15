@@ -28,12 +28,10 @@ def print_r(v):
  
 def get_videoinfo(pathtovideo):
 	file_info =  {}
-
 	p = subprocess.Popen(['ffprobe', '-i', pathtovideo],
 	stdout=subprocess.PIPE,
 	stderr=subprocess.PIPE)
 	stdout, stderr = p.communicate()
-
 
 	# Video pixel Size
 	pattern = re.compile(b'Stream.*Video.*([0-9]{3,})x([0-9]{3,})')
@@ -108,41 +106,52 @@ def get_fileinfo(filename):
 	return file_info1
 
 
-def add_directory(dirname,args,writer):
 
-	
-	# add all the movie in a directory
-	if args.verbose :
-		print_log("Analizing "+ dirname)
-	for dirpath, dirnames,files in os.walk(dirname):
-		for subdir in dirnames:
-			add_directory(subdir,args,writer)
-		
-		for filename in files:
-			file_full_path = os.path.join(dirpath, filename)
+def recusively_write_info(args,fieldnames):
+	for dirpath, dirnames, filenames in os.walk (args.directory_input):
+		print(dirpath, dirnames, filenames)
+		f = open(args.output, 'at')
+		writer = csv.DictWriter(f, fieldnames=fieldnames)
+		for nomefile in filenames:
+			file_full_path = os.path.join(dirpath, nomefile)
 			print(file_full_path)
 			file_info = get_fileinfo(file_full_path)
 			file_info_keys = file_info.keys()
 			file_info_values = list(file_info.values())
-			#	print(file_info)
 			writer.writerow(file_info)
+		f.close()			
+
+
+def old_recusively_write_info(dir,args,fieldnames):
+	for dirpath, dirnames, filenames in os.walk(dir):
+		for subdir in dirnames:
+			#recusively_write_info(dirpath+'/'+subdir,args,fieldnames)
+			recusively_write_info(subdir,args,fieldnames)
+		f = open(args.output, 'at')
 	
-
+		writer = csv.DictWriter(f, fieldnames=fieldnames)
+		for nomefile in filenames:
+			file_full_path = os.path.join(dirpath, nomefile)
+			print(file_full_path)
+			file_info = get_fileinfo(file_full_path)
+			file_info_keys = file_info.keys()
+			file_info_values = list(file_info.values())
+			writer.writerow(file_info)
+		f.close()			
+		print('-----------------')	
 			
-
 def run(args=None):
 	f = open(args.output, 'wt')
 	fieldnames = ('path','filename','bitrate', 'Container', 'Acodec', 'duration', 'Ysize', 'Xsize', 'filesize', 'Vcodec' )
 	writer = csv.DictWriter(f, fieldnames=fieldnames)
 	headers = dict( (n,n) for n in fieldnames )
 	writer.writerow(headers)	
+	f.close()
 	
 	print ("Output file: %s" % args.output )
-	
-	if args.directory_input:
-		add_directory(args.directory_input,args,writer)
 
-	f.close()
+	recusively_write_info(args,fieldnames)
+	
 		
 def main():
 	
