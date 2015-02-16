@@ -109,7 +109,6 @@ def get_fileinfo(filename):
 
 def recusively_write_info(args,fieldnames):
 	for dirpath, dirnames, filenames in os.walk (args.directory_input):
-		print(dirpath, dirnames, filenames)
 		f = open(args.output, 'at')
 		writer = csv.DictWriter(f, fieldnames=fieldnames)
 		for nomefile in filenames:
@@ -121,28 +120,10 @@ def recusively_write_info(args,fieldnames):
 			writer.writerow(file_info)
 		f.close()			
 
-
-def old_recusively_write_info(dir,args,fieldnames):
-	for dirpath, dirnames, filenames in os.walk(dir):
-		for subdir in dirnames:
-			#recusively_write_info(dirpath+'/'+subdir,args,fieldnames)
-			recusively_write_info(subdir,args,fieldnames)
-		f = open(args.output, 'at')
-	
-		writer = csv.DictWriter(f, fieldnames=fieldnames)
-		for nomefile in filenames:
-			file_full_path = os.path.join(dirpath, nomefile)
-			print(file_full_path)
-			file_info = get_fileinfo(file_full_path)
-			file_info_keys = file_info.keys()
-			file_info_values = list(file_info.values())
-			writer.writerow(file_info)
-		f.close()			
-		print('-----------------')	
 			
 def run(args=None):
 	f = open(args.output, 'wt')
-	fieldnames = ('path','filename','bitrate', 'Container', 'Acodec', 'duration', 'Ysize', 'Xsize', 'filesize', 'Vcodec' )
+	fieldnames = ('path','filename', 'filesize', 'Container', 'Vcodec', 'Acodec', 'duration', 'Ysize', 'Xsize','bitrate' )
 	writer = csv.DictWriter(f, fieldnames=fieldnames)
 	headers = dict( (n,n) for n in fieldnames )
 	writer.writerow(headers)	
@@ -156,7 +137,8 @@ def run(args=None):
 def main():
 	
 	parser = argparse.ArgumentParser(description='Genera un file con tutte le informazioni sui file video contenuti in una directory (comprese le subdirectory)')
-	parser.add_argument('-d','--directory-input',help='Directory where are ')
+	parser.add_argument('directory_input')
+#	parser.add_argument('-d','--directory-input',help='Directory where are ')
 	parser.add_argument('-o','--output',help='Output file name', default='videocat.csv')
 	parser.add_argument('-v','--verbose',help='Verbose',action="store_true")
 	
