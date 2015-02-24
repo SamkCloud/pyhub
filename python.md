@@ -122,6 +122,19 @@ print(str.startswith( 'this', 2, 4 ))
 
 il risultatò sarà: True,True,False
 
+## convertire in stringhe
+
+si può usare il metodo zfill per aggiungere zeri all'inzio
+
+	i = 3
+	print(str(i).zfill(3))
+
+restituisce 
+
+	003
+
+
+
 ## Unicode
 
 rappresentazione unicode:
@@ -202,4 +215,56 @@ c.execute(LineSQL)
 for row in c:
 	print row
 
+```
+
+# Librerie 
+
+## html 
+
+	from bs4 import BeautifulSoup
+	
+## block of text
+```
+ID: 1
+Name: X
+FamilyN: Y
+Age: 20
+
+ID: 2
+Name: H
+FamilyN: F
+Age: 23
+
+ID: 3
+Name: S
+FamilyN: Y
+Age: 13
+
+ID: 4
+Name: M
+FamilyN: Z
+Age: 25
+```
+
+```
+import itertools
+
+def isa_group_separator(line):
+    return line=='\n'
+
+with open('data_file') as f:
+    for key,group in itertools.groupby(f,isa_group_separator):
+        # print(key,list(group))  # uncomment to see what itertools.groupby does.
+        if not key:
+            data={}
+            for item in group:
+                field,value=item.split(':')
+                value=value.strip()
+                data[field]=value
+            print('{FamilyN} {Name} {Age}'.format(**data))
+
+# Y X 20
+# F H 23
+# Y S 13
+# Z M 25
 ```

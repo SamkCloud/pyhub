@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# gd 201409
+# gd 20140901
 """
 Parse a file (utf-8 compatible
 """
