@@ -1,0 +1,20 @@
+=GOOGLE CONTACTS TO PDF
+
+== AGENDA
+
+crea un file latx con una tabella con tutti i numeri di telefono
+
+- esportare i contatti in formato OUTLOOK
+
+- copiare il file num-utili.tex nella stessa cartella
+
+- lanciare il comando :
+	
+	~/public_html/pyhub/varie/google_contacts_to_pdf_latex/google-contacts-to-pdf-latex.py contacts.csv -i num-utili.tex  -o output.tex -f m
+	
+- generare il pdf con pdflatex
+
+- Stampare con l'opzione l'agenda con l'opzione fronte-retro : (short edge TOP )
+
+
+
