@@ -15,6 +15,9 @@ import shlex
 command_line = '/bin/vikings -input eggs.txt -output "spam spam.txt" -cmd "echo '$MONEY'"'
 args = shlex.split(command_line)
 print(args)
-p = subprocess.Popen(args) # Success!
+p = subprocess.Popen(args) # Success! e continua lo script senza aspettare che il comando finisca
+#p = subprocess.call(args) # Aspetta che il comando finisca e poi continua lo script
+
+
 
 
