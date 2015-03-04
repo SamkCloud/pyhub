@@ -10,6 +10,8 @@ import re
 import argparse
 import shlex
 import subprocess
+import zipfile
+import shutil
 
 def emit_verbose(line):
 	# if verbose is on emit the string
@@ -37,30 +39,32 @@ def create_img_link():
 	if not os.path.exists(output_img_dir):
 		os.symlink(input_img_dir,output_img_dir)
 
-def run():
-	
-	emit_verbose("script start")
-	
-	create_directory()
-	create_img_link()
-	
+def convert_adoc2html_asciidoctor():
 	file_basename = os.path.splitext(os.path.basename(args.input))[0]
+	command_line = 'asciidoctor ' + args.input + ' -D '+args.output_dir
+	exec_cmd(command_line)
+	output_filename = os.path.join(args.output_dir,file_basename+'.html')
+	return output_filename
+
+def convert_adoc2latex_asciidoctor():
+	file_basename = os.path.splitext(os.path.basename(args.input))[0]
+	command_line = 'asciidoctor-latex ' + args.input + ' -D '+args.output_dir
+	exec_cmd(command_line)
+	output_filename = os.path.join(args.output_dir,file_basename+'.tex')
+	shutil.move("newEnvironments.tex", args.output_dir)
 	
-		
-	# esegue le conversioni	
-	if args.conversion == 'adoc2html-asciidoctor':
-		command_line = 'asciidoctor ' + args.input + ' -D '+args.output_dir
-		exec_cmd(command_line)
-		output_filename = os.path.join(args.output_dir,file_basename+'.html')
-			
-		
-	elif args.conversion == 'adoc2docbook-asciidoctor':
-		command_line =	'asciidoctor -b docbook ' + args.input + ' -D '+args.output_dir
-		exec_cmd(command_line)
-		output_filename = os.path.join(args.output_dir,file_basename+'.xml')
+	return output_filename
 	
-	elif args.conversion == 'docbook2epub-xsltproc':
-		output_filename = os.path.join(args.output_dir,file_basename+'.epub')
+def convert_adoc2docbook_asciidoctor():
+	file_basename = os.path.splitext(os.path.basename(args.input))[0]
+	command_line =	'asciidoctor -b docbook ' + args.input + ' -D '+args.output_dir
+	exec_cmd(command_line)
+	output_filename = os.path.join(args.output_dir,file_basename+'.xml')
+	return output_filename
+
+def convert_docbook2epub_xsltproc():
+	file_basename = os.path.splitext(os.path.basename(args.input))[0]
+	output_filename = os.path.join(args.output_dir,file_basename+'.epub')
 	#	xsltproc /usr/share/xml/docbook/xsl-stylesheets-1.78.1/epub/docbook.xsl $INPUT_FILE 
 	#	echo "application/epub+zip" > mimetype
 	#	cd OEBPS
@@ -70,24 +74,64 @@ def run():
 	#	zip -Xr9D $filename.epub OEBPS META-INF 
 	#	rm -fr OEBPS META-INF mimetype'''
 		
-		command_line =	'xsltproc /usr/share/xml/docbook/xsl-stylesheets-1.78.1/epub/docbook.xsl -o '+args.output_dir + '/ ' + args.input 
-		exec_cmd(command_line)
-		
-		emit_verbose("write 'application/epub+zip' in  mimetype")
-		with open(os.path.join(args.output_dir,'mimetype'), "wt") as out_file:
-			out_file.write("application/epub+zip")
-		
-		### USARE il modulo zipfile ... 
-		
-		command_line =	'zip -0Xq  '+ output_filename +' '+args.output_dir+'/mimetype' +' '+args.output_dir+'/mimetype'
-		#command_line =	'7z a -tzip '+ output_filename +' '+args.output_dir+'/mimetype' +' '+args.output_dir+'/mimetype'
-		exec_cmd(command_line)
-		
-		command_line =	'zip -Xr9D  '+ output_filename +' '+args.output_dir+'/OEBPS '+args.output_dir+'/META-INF '+ args.output_dir+'/'+args.img_dir
-		#command_line =	'7z a -l -tzip  '+ output_filename +' '+args.output_dir+'/OEBPS '+args.output_dir+'/META-INF '+ args.output_dir+'/'+args.img_dir
-		exec_cmd(command_line)
-		
+	command_line =	'xsltproc /usr/share/xml/docbook/xsl-stylesheets-1.78.1/epub/docbook.xsl -o '+args.output_dir + '/ ' + args.input 
+	exec_cmd(command_line)
 	
+	emit_verbose("write 'application/epub+zip' in  mimetype")
+	with open(os.path.join(args.output_dir,'mimetype'), "wt") as out_file:
+		out_file.write("application/epub+zip")
+	
+	### USARE il modulo zipfile ... 
+	
+	with zipfile.ZipFile(output_filename, 'w',zipfile.ZIP_DEFLATED) as myzip:
+		
+		# aggiungo il file mimetype
+		myzip.write(args.output_dir+'/mimetype','mimetype')
+			
+		# aggiungo la directory /OEBPS
+		for root, dirs, files in os.walk(args.output_dir+'/OEBPS'):
+			for file in files:
+				myzip.write(os.path.join(root, file),'/OEBPS/'+file)
+				
+		# aggiungo la directory /META-INF
+		for root, dirs, files in os.walk(args.output_dir+'/META-INF'):
+			for file in files:
+				myzip.write(os.path.join(root, file),'/META-INF/'+file)
+				# aggiungo la directory /img
+		for root, dirs, files in os.walk(args.output_dir+'/'+args.img_dir):
+			for file in files:
+				myzip.write(os.path.join(root, file),'/OEBPS/'+args.img_dir+'/'+file)
+				
+				
+	# remove temporanry file
+	
+	os.remove(args.output_dir+'/mimetype')
+	os.remove(args.output_dir+'/'+args.img_dir)
+	shutil.rmtree(args.output_dir+'/OEBPS')
+	shutil.rmtree(args.output_dir+'/META-INF')
+	
+	return output_filename
+
+				
+def run():
+	
+	emit_verbose("script start")
+	
+	create_directory()
+	create_img_link()
+	
+		
+	# esegue le conversioni	
+	if args.conversion == 'adoc2html-asciidoctor':
+		output_filename = convert_adoc2html_asciidoctor()
+	elif args.conversion == 'adoc2latex-asciidoctor':
+		output_filename = convert_adoc2latex_asciidoctor()			
+	elif args.conversion == 'adoc2docbook-asciidoctor':
+		output_filename = convert_adoc2docbook_asciidoctor()
+	
+	elif args.conversion == 'docbook2epub-xsltproc':
+		output_filename = convert_docbook2epub_xsltproc()
+
 	
 
 	# applica le patch se presenti
@@ -106,6 +150,7 @@ def main():
 		choices=[	'adoc2html-asciidoctor', 
 					'adoc2docbook-asciidoctor',
 					'docbook2epub-xsltproc',
+					'adoc2latex-asciidoctor', 
 					])
 	parser.add_argument('-D','--output-dir',help='Output Directory',default='./')
 	parser.add_argument('--img-dir',help='Directory where are stored the img',default='img')
