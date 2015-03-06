@@ -51,7 +51,8 @@ def convert_adoc2latex_asciidoctor():
 	command_line = 'asciidoctor-latex ' + args.input + ' -D '+args.output_dir
 	exec_cmd(command_line)
 	output_filename = os.path.join(args.output_dir,file_basename+'.tex')
-	shutil.move("newEnvironments.tex", args.output_dir)
+	if not os.path.isfile(os.path.join(args.output_dir,'newEnvironments.tex')) :
+		shutil.move("newEnvironments.tex", args.output_dir)
 	
 	return output_filename
 	
@@ -61,6 +62,18 @@ def convert_adoc2docbook_asciidoctor():
 	exec_cmd(command_line)
 	output_filename = os.path.join(args.output_dir,file_basename+'.xml')
 	return output_filename
+
+
+def convert_docbook2pdf_dblatex():
+	print('DA COMPLETARE')
+	file_basename = os.path.splitext(os.path.basename(args.input))[0]
+	command_line =	'dblatex -V -T  db2latex ' + args.input 
+	exec_cmd(command_line)
+	output_filename = os.path.join(args.output_dir,file_basename+'.pdf')
+	return output_filename
+	
+	
+	 
 
 def convert_docbook2epub_xsltproc():
 	file_basename = os.path.splitext(os.path.basename(args.input))[0]
@@ -118,6 +131,7 @@ def run():
 	emit_verbose("script start")
 	
 	create_directory()
+
 	create_img_link()
 	
 		
@@ -128,15 +142,18 @@ def run():
 		output_filename = convert_adoc2latex_asciidoctor()			
 	elif args.conversion == 'adoc2docbook-asciidoctor':
 		output_filename = convert_adoc2docbook_asciidoctor()
-	
 	elif args.conversion == 'docbook2epub-xsltproc':
 		output_filename = convert_docbook2epub_xsltproc()
+	elif args.conversion == 'docbook2pdf-dblatex':
+		output_filename = convert_docbook2pdf_dblatex()
+		
 
-	
 
 	# applica le patch se presenti
 	if((args.patch_file != None) and (os.path.isfile(args.patch_file))):
 		emit_verbose("Patch output file")
+		if(args.preserve_patch):
+			shutil.copyfile(output_filename, output_filename+'.orig')
 		command_line = 'patch '+ output_filename + ' '+args.patch_file
 		exec_cmd(command_line)		
 		
@@ -151,10 +168,12 @@ def main():
 					'adoc2docbook-asciidoctor',
 					'docbook2epub-xsltproc',
 					'adoc2latex-asciidoctor', 
+					'docbook2pdf-dblatex',
 					])
 	parser.add_argument('-D','--output-dir',help='Output Directory',default='./')
 	parser.add_argument('--img-dir',help='Directory where are stored the img',default='img')
 	parser.add_argument('--patch-file',help='Directory where are stored the patch',default=None)
+	parser.add_argument('--preserve-patch',help='Preserve file before patching it',action='store_true')
 	parser.add_argument('-v','--verbose',help='Verbose',action='store_true')
 	
 	args = parser.parse_args()
