@@ -39,6 +39,15 @@ def create_img_link():
 	if not os.path.exists(output_img_dir):
 		os.symlink(input_img_dir,output_img_dir)
 
+def patch_apply(output_filename):
+	# applica le patch se presenti
+	if((args.patch_file != None) and (os.path.isfile(args.patch_file))):
+		emit_verbose("Patch output file")
+		if(args.preserve_patch):
+			shutil.copyfile(output_filename, output_filename+'.orig')
+		command_line = 'patch '+ output_filename + ' '+args.patch_file
+		exec_cmd(command_line)		
+
 def convert_adoc2html_asciidoctor():
 	file_basename = os.path.splitext(os.path.basename(args.input))[0]
 	command_line = 'asciidoctor ' + args.input + ' -D '+args.output_dir
@@ -65,11 +74,13 @@ def convert_adoc2docbook_asciidoctor():
 
 
 def convert_docbook2pdf_dblatex():
-	print('DA COMPLETARE')
 	file_basename = os.path.splitext(os.path.basename(args.input))[0]
 	command_line =	'dblatex -V -T  db2latex ' + args.input 
 	exec_cmd(command_line)
 	output_filename = os.path.join(args.output_dir,file_basename+'.pdf')
+	emit_verbose('mv '+os.path.splitext(args.input)[0]+'.pdf ' + output_filename)
+	shutil.move(os.path.splitext(args.input)[0]+'.pdf', output_filename)
+	
 	return output_filename
 	
 	
@@ -146,16 +157,8 @@ def run():
 		output_filename = convert_docbook2epub_xsltproc()
 	elif args.conversion == 'docbook2pdf-dblatex':
 		output_filename = convert_docbook2pdf_dblatex()
-		
 
-
-	# applica le patch se presenti
-	if((args.patch_file != None) and (os.path.isfile(args.patch_file))):
-		emit_verbose("Patch output file")
-		if(args.preserve_patch):
-			shutil.copyfile(output_filename, output_filename+'.orig')
-		command_line = 'patch '+ output_filename + ' '+args.patch_file
-		exec_cmd(command_line)		
+	patch_apply(output_filename)
 		
 		
 def main():
