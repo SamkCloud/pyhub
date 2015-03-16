@@ -1,4 +1,5 @@
 #!/bin/sh
+# rimuove duplicati sostituendoli con un hard link 
 # GD 20150316
 
 fdupes -r -1 . | while read line
