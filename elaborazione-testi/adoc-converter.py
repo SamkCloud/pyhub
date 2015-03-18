@@ -178,6 +178,7 @@ def main():
 	parser.add_argument('--img-dir',help='Directory where are stored the img',default='img')
 	parser.add_argument('--patch-file',help='Directory where are stored the patch',default=None)
 	parser.add_argument('--preserve-patch',help='Preserve file before patching it',action='store_true')
+	parser.add_argument('--keep-tmp',help='keep tmp file',action='store_true')
 	parser.add_argument('-v','--verbose',help='Verbose',action='store_true')
 	
 	args = parser.parse_args()
