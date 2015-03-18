@@ -33,10 +33,13 @@ def run(args=None):
 				new_list.append(new_item)
 			new_list.sort()
 			
+			tieni_o_cancella = 'T'
 			for (key,item) in new_list:
-				linea=str(key)+"\t"+item
-				
-				f_out.write(linea)
+				# se item non è una riga vuota
+				if item.strip():
+					linea=str(key)+"\t"+item.strip()+"\t"+tieni_o_cancella+"\n"
+					tieni_o_cancella = 'C'
+					f_out.write(linea)
 			f_out.write("\n")
 	
 
