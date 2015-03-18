@@ -1,55 +1,53 @@
----
-title: Python
-author: Giuliano Dedda 
-date: 28/07/2014
----
+= Python
+Giuliano Dedda 18/3/2015
 
-#Files
 
-##Leggere e scrivere su files
+== Files
+
+=== Leggere e scrivere su files
 ```python
-output = open('pippo.txt','w')	apertura di un file in scrittura
-input = open('dati','r')	apertura di un file in lettura
-s = input.read()	lettura dell'intero contenuto del file
-s = input.read(N)	lettura di N bytes
-s = input.readline()	lettura di una riga (per files di testo)
-s = input.readlines()	restuisce l'intero file come lista di righe (per files di testo)
+output ==open('pippo.txt','w')	apertura di un file in scrittura
+input ==open('dati','r')	apertura di un file in lettura
+s ==input.read()	lettura dell'intero contenuto del file
+s ==input.read(N)	lettura di N bytes
+s ==input.readline()	lettura di una riga (per files di testo)
+s ==input.readlines()	restuisce l'intero file come lista di righe (per files di testo)
 output.wre(s)	scrivo un intero file
 output.wrelines(L)	scrive la lista L in righe nel file
 output.close(L)	chiusura del file
 ```
 è meglio usare  readlines rispetto a  readline perché è più veloce.
 
-##Parsing di un file
+=== Parsing di un file
 ```python
 import sys
 
-f = open(sys.argv[1], 'r')
+f ==open(sys.argv[1], 'r')
 
 for line in f.readlines():
 	print line
 ```
 
 
-##File in una directory
+=== File in una directory
 ```python
-dirname = './'
+dirname =='./'
 for dirpath, dirnames,files in os.walk(dirname):
 	for filename in files:
-		file_full_path = os.path.join(dirpath, filename)
+		file_full_path ==os.path.join(dirpath, filename)
 		print(file_full_path)
 ```
 
-##Movimentazione file
+=== Movimentazione file
 
 ```python
-(root,ext) = os.path.splitext(filename)	# divide il nomefile in basename e estensione
+(root,ext) ==os.path.splitext(filename)	==divide il nomefile in basename e estensione
 
-shutil.copyfile(src,dst) # copia file
-shutil.move(src,dst) # sposta file
+shutil.copyfile(src,dst) ==copia file
+shutil.move(src,dst) ==sposta file
 ```
 
-#Script che mostra gli argomenti e esegue un comando
+== Script che mostra gli argomenti e esegue un comando
 ```python
 import sys
 import subprocess
@@ -57,33 +55,34 @@ import subprocess
 for x in sys.argv:
     print x
 
-output = subprocess.check_output(['ls', '-l'])
+output ==subprocess.check_output(['ls', '-l'])
 print(output)
 
 ```
 
-#Array, liste, dizionari
+== Array, liste, dizionari
 Una Lista (cioè un array) può essere definita così:
 ```python
-xx = array([2, 4, -11])
-yy = zeros(3, Int)        # Create empty array ready to receive result
+xx ==array([2, 4, -11])
+yy ==zeros(3, Int)        ==Create empty array ready to receive result
 for i in range(0, 3):
-     yy[i] = xx[i] * 2
+     yy[i] ==xx[i] * 2
 print yy
 [  4   8 -22]
 
-li = ["a", "b", "mpilgrim", "z", "example"]
+li ==["a", "b", "mpilgrim", "z", "example"]
 
 
 Le tuple sono come le liste ma non hanno metodi e sono pià veloci
-    t = ("a", "b", "mpilgrim", "z", "example")
+    t ==("a", "b", "mpilgrim", "z", "example")
 
 
 Un dizionario invece ha una relazione uno a uno con le chiavi:
-    d = {"server":"mpilgrim", "database":"master"} 
-    print d['server']
+```
+d =={"server":"mpilgrim", "database":"master"} 
+print d['server']
 
-params = {"server":"mpilgrim", "database":"master", "uid":"sa", "pwd":"secret"}
+params =={"server":"mpilgrim", "database":"master", "uid":"sa", "pwd":"secret"}
 
 >>> params.keys()   
 ['server', 'uid', 'database', 'pwd']
@@ -96,25 +95,28 @@ params = {"server":"mpilgrim", "database":"master", "uid":"sa", "pwd":"secret"}
 ```
 
 
-#Stringhe
+== Stringhe
 Per concatenare stringhe sui usa il '+'
 per convertire da binarie a stringe usare:
 
-    linea_str = str( linea_binaria, encoding='utf8' )
+    linea_str ==str( linea_binaria, encoding='utf8' )
  
 per vedere se una stringa non è contenuta in un altra
 
     if "blah" not in somestring: continue
 
-Comando                                             	| Effetto
---------------------------------------------------------|--------------------------------------------------------
-print "Users connected: %d" % (userCount, )		| Inserire un intero in una stringa
-stringa = format(int(data_video[1]), '02d')		| per formattare gli interi con gli zero davanti (leading zero)
-testo = testo.replace('S', '6')				| sostituzione di caratteri all'interno di una stringa
+|====
+|Comando                                             	| Effetto
+//------------------------------------------------------|--------------------------------------------------------
+|print "Users connected: %d" % (userCount, )		| Inserire un intero in una stringa
+|stringa ==format(int(data_video[1]), '02d')		| per formattare gli interi con gli zero davanti (leading zero)
+|testo ==testo.replace('S', '6')				| sostituzione di caratteri all'interno di una stringa
+|====
 
 per confrontare la parte iniziale di una stringa si può usare _startswith_:
+
 ```python
-str = "this is string example....wow!!!";
+str =="this is string example....wow!!!";
 print(str.startswith( 'this' ))
 print(str.startswith( 'is', 2, 4 ))
 print(str.startswith( 'this', 2, 4 ))
@@ -122,11 +124,11 @@ print(str.startswith( 'this', 2, 4 ))
 
 il risultatò sarà: True,True,False
 
-## convertire in stringhe
+=== convertire in stringhe
 
 si può usare il metodo zfill per aggiungere zeri all'inzio
 
-	i = 3
+	i ==3
 	print(str(i).zfill(3))
 
 restituisce 
@@ -135,15 +137,15 @@ restituisce
 
 
 
-## Unicode
+=== Unicode
 
 rappresentazione unicode:
 
-    '☃' == '\u2603' == '\U00002603' == '\N{SNOWMAN}'
+    '☃' ==== '\u2603' ==== '\U00002603' ==== '\N{SNOWMAN}'
 
 per rappresentare i byte
 
-    bytestring = b"Byte string in Python3"
+    bytestring ==b"Byte string in Python3"
 
 per sapere che tipo di stringa stiamo lavorando:
 
@@ -151,16 +153,16 @@ per sapere che tipo di stringa stiamo lavorando:
 
 Encoding:        Unicode → Bytes
 
-    bytestr = unistr.encode('utf-8')
+    bytestr ==unistr.encode('utf-8')
 
 Decoding:        Bytes → Unicode
 
-    unistr = bytestr.decode('utf-8')
+    unistr ==bytestr.decode('utf-8')
 
 conversione in ascii
 ```python
->>> snowman = 'Snowman: ☃' # Python 3
->>> snowman.encode('ascii', 'strict') # default
+>>> snowman = 'Snowman: ☃' = Python 3
+>>> snowman.encode('ascii', 'strict') = default
 UnicodeEncodeError: 'ascii' codec can't encode character 
   '\u2603' in position 9: ordinal not in range(128)
 >>> snowman.encode('ascii', 'replace')
@@ -168,7 +170,7 @@ b'Snowman: ?'
 >>> snowman.encode('ascii', 'ignore')
 b'Snowman: '
 >>> snowman.encode('ascii', 'xmlcharrefreplace')
-b'Snowman: &#9731;'
+b'Snowman: &=9731;'
 >>> snowman.encode('ascii', 'backslashreplace')
 b'Snowman: \\u2603'
 
@@ -186,7 +188,7 @@ per i file:
 
 
 
-#Espressioni regolari
+== Espressioni regolari
 ```python
 import sys
 import re
@@ -199,13 +201,13 @@ for line in f.readlines():
 		print line
 ```
 
-#Import
+== Import
 Per importare da librerie fatte da me
 ```python
 sys.path.append("~/bin/")
 import dvd_extract_vob_chapter
 ```
-#Sqlite
+== Sqlite
 ```python
 conn = sqlite3.connect('photos.db')
 c = conn.cursor()
@@ -217,13 +219,13 @@ for row in c:
 
 ```
 
-# Librerie 
+== Librerie 
 
-## html 
+===  html 
 
 	from bs4 import BeautifulSoup
 	
-## block of text
+===  block of text
 ```
 ID: 1
 Name: X
@@ -250,11 +252,11 @@ Age: 25
 import itertools
 
 def isa_group_separator(line):
-    return line=='\n'
+    return line=== '\n'
 
 with open('data_file') as f:
     for key,group in itertools.groupby(f,isa_group_separator):
-        # print(key,list(group))  # uncomment to see what itertools.groupby does.
+        = print(key,list(group))  = uncomment to see what itertools.groupby does.
         if not key:
             data={}
             for item in group:
@@ -262,7 +264,6 @@ with open('data_file') as f:
                 value=value.strip()
                 data[field]=value
             print('{FamilyN} {Name} {Age}'.format(**data))
-
 # Y X 20
 # F H 23
 # Y S 13
