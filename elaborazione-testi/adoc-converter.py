@@ -24,6 +24,11 @@ def exec_cmd(command_line):
 	emit_verbose(command_line)
 	p = subprocess.call(a_cmd) 					
 
+	
+def zipdir(path, zip):
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            zip.write(os.path.join(root, file))
 
 def create_directory():	
 	# Create the output directory if not exists
@@ -31,13 +36,14 @@ def create_directory():
 		emit_verbose("Directory "+args.output_dir+ " don't exists ... I'll create it")
 		os.makedirs(args.output_dir)
 		
-def create_img_link():
+def create_img_dir():
 	# crea il link alle immagini se non esistente
-	output_img_dir = os.path.realpath(args.output_dir)+'/'+args.img_dir
-	input_img_dir = os.path.dirname(os.path.realpath(args.input))+'/'+args.img_dir
+	output_img_dir = os.path.join(os.path.realpath(args.output_dir),args.img_dir)
+	input_img_dir = os.path.join(os.path.dirname(os.path.realpath(args.input)),args.img_dir)
 	
 	if not os.path.exists(output_img_dir):
-		os.symlink(input_img_dir,output_img_dir)
+		shutil.copytree(input_img_dir, output_img_dir)
+		#os.symlink(input_img_dir,output_img_dir)
 
 def patch_apply(output_filename):
 	# applica le patch se presenti
@@ -49,6 +55,7 @@ def patch_apply(output_filename):
 		exec_cmd(command_line)		
 
 def convert_adoc2html_asciidoctor():
+	create_img_dir()
 	file_basename = os.path.splitext(os.path.basename(args.input))[0]
 	command_line = 'asciidoctor ' + args.input + ' -D '+args.output_dir
 	exec_cmd(command_line)
@@ -56,6 +63,7 @@ def convert_adoc2html_asciidoctor():
 	return output_filename
 
 def convert_adoc2latex_asciidoctor():
+	create_img_dir()
 	file_basename = os.path.splitext(os.path.basename(args.input))[0]
 	command_line = 'asciidoctor-latex ' + args.input + ' -D '+args.output_dir
 	exec_cmd(command_line)
@@ -66,6 +74,7 @@ def convert_adoc2latex_asciidoctor():
 	return output_filename
 	
 def convert_adoc2docbook_asciidoctor():
+	create_img_dir()
 	file_basename = os.path.splitext(os.path.basename(args.input))[0]
 	command_line =	'asciidoctor -b docbook ' + args.input + ' -D '+args.output_dir
 	exec_cmd(command_line)
@@ -87,6 +96,7 @@ def convert_docbook2pdf_dblatex():
 	 
 
 def convert_docbook2epub_xsltproc():
+	create_img_dir()
 	file_basename = os.path.splitext(os.path.basename(args.input))[0]
 	output_filename = os.path.join(args.output_dir,file_basename+'.epub')
 	#	xsltproc /usr/share/xml/docbook/xsl-stylesheets-1.78.1/epub/docbook.xsl $INPUT_FILE 
@@ -98,41 +108,34 @@ def convert_docbook2epub_xsltproc():
 	#	zip -Xr9D $filename.epub OEBPS META-INF 
 	#	rm -fr OEBPS META-INF mimetype'''
 		
-	command_line =	'xsltproc /usr/share/xml/docbook/xsl-stylesheets-1.78.1/epub/docbook.xsl -o '+args.output_dir + '/ ' + args.input 
+	command_line =	'xsltproc /usr/share/xml/docbook/xsl-stylesheets-1.78.1/epub/docbook.xsl ' + args.input 
 	exec_cmd(command_line)
 	
 	emit_verbose("write 'application/epub+zip' in  mimetype")
-	with open(os.path.join(args.output_dir,'mimetype'), "wt") as out_file:
+	with open('mimetype', "wt") as out_file:
 		out_file.write("application/epub+zip")
-	
-	### USARE il modulo zipfile ... 
-	
+
 	with zipfile.ZipFile(output_filename, 'w',zipfile.ZIP_DEFLATED) as myzip:
 		
 		# aggiungo il file mimetype
-		myzip.write(args.output_dir+'/mimetype','mimetype')
+		myzip.write('mimetype')
 			
-		# aggiungo la directory /OEBPS
-		for root, dirs, files in os.walk(args.output_dir+'/OEBPS'):
-			for file in files:
-				myzip.write(os.path.join(root, file),'/OEBPS/'+file)
-				
-		# aggiungo la directory /META-INF
-		for root, dirs, files in os.walk(args.output_dir+'/META-INF'):
-			for file in files:
-				myzip.write(os.path.join(root, file),'/META-INF/'+file)
-				# aggiungo la directory /img
-		for root, dirs, files in os.walk(args.output_dir+'/'+args.img_dir):
-			for file in files:
-				myzip.write(os.path.join(root, file),'/OEBPS/'+args.img_dir+'/'+file)
-				
+		# copio la directory img in 'OEBPS'
+		src = os.path.join(args.output_dir,args.img_dir)
+		dst = os.path.join('OEBPS',args.img_dir)
+		#shutil.copytree(src, dst)
+		shutil.move(src, dst)
+
+		# aggiungo la directory /META-INF e 'OEBPS'
+		zipdir('META-INF', myzip)
+		zipdir('OEBPS', myzip)
+		
 				
 	# remove temporanry file
 	
-	os.remove(args.output_dir+'/mimetype')
-	os.remove(args.output_dir+'/'+args.img_dir)
-	shutil.rmtree(args.output_dir+'/OEBPS')
-	shutil.rmtree(args.output_dir+'/META-INF')
+	os.remove('mimetype')
+	shutil.rmtree('OEBPS')
+	shutil.rmtree('META-INF')
 	
 	return output_filename
 
@@ -143,9 +146,7 @@ def run():
 	
 	create_directory()
 
-	create_img_link()
 	
-		
 	# esegue le conversioni	
 	if args.conversion == 'adoc2html-asciidoctor':
 		output_filename = convert_adoc2html_asciidoctor()
