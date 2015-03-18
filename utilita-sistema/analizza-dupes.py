@@ -37,7 +37,8 @@ def run(args=None):
 			for (key,item) in new_list:
 				# se item non è una riga vuota
 				if item.strip():
-					linea=str(key)+"\t"+item.strip()+"\t"+tieni_o_cancella+"\n"
+					comando_rm = 'rm "'+item.strip()+'"'
+					linea=str(key)+"\t"+item.strip()+"\t"+tieni_o_cancella+'\t'+comando_rm+"\n"
 					tieni_o_cancella = 'C'
 					f_out.write(linea)
 			f_out.write("\n")
@@ -48,7 +49,7 @@ def main():
 	parser = argparse.ArgumentParser(description='Demo of argparse')
 	parser.add_argument('input', help='file dup.txt da analizzare')
 	parser.add_argument('-d','--directory',help='directory di preferenza (può essere usato più volte)',action='append',required=True)
-	parser.add_argument('-o','--output',help='output file',default='output.txt')
+	parser.add_argument('-o','--output',help='output file',default='output.csv')
 	args = parser.parse_args()
 
 	run(args)
