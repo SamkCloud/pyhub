@@ -135,8 +135,6 @@ restituisce
 
 	003
 
-
-
 === Unicode
 
 rappresentazione unicode:
@@ -184,8 +182,6 @@ per i file:
     open('file.txt', 'rb') → Bytes
     open('file.txt', 'rt') → Unicode
     codecs.open() no longer needed
-
-
 
 
 == Espressioni regolari

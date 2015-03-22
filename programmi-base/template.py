@@ -24,7 +24,7 @@ def exec_cmd(command_line):
 def print_r(v):
     return '%s = %r %s' % (v, v, type(v))
 
-def run(args=None):
+def run():
 	print ("Input file: %s" % args.input )
 	print ("Output file: %s" % args.output )
 	print ("Output file: %s" % args.num )
@@ -32,6 +32,7 @@ def run(args=None):
 
 def main():
 	
+	global args	
 	parser = argparse.ArgumentParser(description='Demo of argparse')
 	parser.add_argument("dirname", help='directory in cui ci sono i film da analizzare')
 	parser.add_argument('-i','--input', help='Input file name',required=True)
@@ -40,7 +41,7 @@ def main():
 	parser.add_argument('-n','--number',help='Numer of times', dest="num", type=int )
 	args = parser.parse_args()
 
-	run(args)
+	run()
 
 if __name__ == '__main__':
     main()
